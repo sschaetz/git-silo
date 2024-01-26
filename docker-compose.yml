@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  josh-proxy:
+    image: joshproject/josh-proxy:latest
+    volumes:
+      - josh-vol:/home/ubuntu/.git-silo/git_data
+    environment:
+      - JOSH_EXTRA_OPTS=--require-auth
+      - JOSH_REMOTE=https://github.com/<ORG>
+    ports:
+      - "8000"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - /home/ubuntu/git-silo/nginx.conf:/etc/nginx/nginx.conf
+      - /home/ubuntu/.git-silo/auth:/etc/nginx/auth
+    ports:
+      - "80:80"
+    depends_on:
+      - josh-proxy
+
+volumes:
+  josh-vol:
+
